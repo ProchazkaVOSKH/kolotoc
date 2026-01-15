@@ -1,38 +1,43 @@
-function vykresliKarty() {
+// obecná funkce, která sestaví HTML text obrázků hracích karet: "<img src="obr1.png"><img src="obr2.png">..."
+function vykresliKarty(k: string[]) {
     let html = "";
-    for (let i = 0; i < karty.length; i++) {
-        html += '<img src="' + karty[i] + '">';
+    for (let i = 0; i < k.length; i++) {
+        html += '<img src="img/' + k[i] + '">';
     }
+    const displej = document.getElementById('displej') as HTMLElement;
     displej.innerHTML = html;
 }
 
-function provedPosun() {
+// obecná funkce, která podle funkcionality posuvného registru otočí o jeden krok pole doprava
+function provedPosun(k: string[]) {
     // vyjmeme poslední prvek a vložíme ho na začátek
-    const posledni = karty.pop();
+    const posledni = k.pop();
     if (posledni !== undefined) {
-        karty.unshift(posledni);
+        k.unshift(posledni);
     }
-    vykresliKarty();
 }
 
-// funkce pro náhodné zamíchání pole (Fisher-Yates shuffle)
-function zamichejKarty() {
-    for (let i = karty.length - 1; i > 0; i--) {
+// obecná funkce pro náhodné zamíchání pole (algoritmus Fisher-Yates shuffle)
+function zamichejKarty(k: string[]) {
+    for (let i = k.length - 1; i > 0; i--) {
         // vybere se náhodný index od 0 do i
         const j = Math.floor(Math.random() * (i + 1));
         // prohození prvků na pozici i a j
-        let temp = karty[i];
-        karty[i] = karty[j];
-        karty[j] = temp;
+        let temp = k[i];
+        k[i] = k[j];
+        k[j] = temp;
     }
+}
+
+// událostní funkce od kliknutí na tlačítko
+function zmena() {
+    provedPosun(karty);
+    vykresliKarty(karty);
 }
 
 // připravíme si pole s názvy obrázků karet
 const karty: string[] = ["card1.png", "card2.png", "card3.png", "card4.png", "card5.png", "card6.png"];
 
-// získáme přístup k prvkům na stránce
-const displej = document.getElementById('displej') as HTMLElement;
-const tlacitko = document.getElementById('spinBtn') as HTMLButtonElement;
-
-zamichejKarty();
-vykresliKarty();
+// inicializace katet (výchozí zobrazení)
+zamichejKarty(karty);
+vykresliKarty(karty);
